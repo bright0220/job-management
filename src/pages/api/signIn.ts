@@ -16,12 +16,22 @@ export default async function handler(
 
   const { email, password } = req.body;
 
+  let err_status = "";
+
   await executeQuery({
     query: "SELECT * FROM users WHERE email = ?",
     values: [email],
   })
     .then((result) => {
       if (result.length && bcrypt.compareSync(password, result[0].password)) {
+        if (result[0].isActive === 0) {
+          res
+            .status(401)
+            .json({ message: "Pending Account. Please Verify Your Email!" });
+          err_status = "pending";
+          return;
+        }
+
         const token = jwt.sign(
           { user_id: result[0].id, email },
           process.env.TOKEN_KEY,
@@ -31,9 +41,8 @@ export default async function handler(
           ...result[0],
           token,
         });
-      }
-      console.log(result.length);
-      res.status(400).send("Invalid Credentials");
+      } else if (err_status !== "pending")
+        res.status(400).send("Invalid Credentials");
     })
     .catch((error) => {
       res.status(500).json(error);
