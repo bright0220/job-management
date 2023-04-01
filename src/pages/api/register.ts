@@ -49,7 +49,9 @@ export default async function handler(
                 token,
               }),
             }).catch((e) => console.log);
-            res.status(200).send("SignUp is success!");
+            res
+              .status(200)
+              .send("SignUp is success! Please confirm your email.");
           })
           .catch((error) => {
             res.status(500).json(error);

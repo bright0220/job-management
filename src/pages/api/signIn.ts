@@ -27,7 +27,10 @@ export default async function handler(
         if (result[0].isActive === 0) {
           res
             .status(401)
-            .json({ message: "Pending Account. Please Verify Your Email!" });
+            .json({
+              type: "pending",
+              message: "Pending Account. Please Verify Your Email!",
+            });
           err_status = "pending";
           return;
         }
@@ -42,7 +45,9 @@ export default async function handler(
           token,
         });
       } else if (err_status !== "pending")
-        res.status(400).send("Invalid Credentials");
+        res
+          .status(400)
+          .json({ type: "invalid", message: "Invalid Credentials" });
     })
     .catch((error) => {
       res.status(500).json(error);
