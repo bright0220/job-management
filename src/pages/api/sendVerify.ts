@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import validate from "deep-email-validator";
 
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
@@ -16,6 +17,11 @@ export default async function handler(
 
   const { email, firstName, token } = JSON.parse(req.body);
 
+  const isValid = await validate(email);
+  if (isValid.reason === "mx") {
+    res.status(500).send("Invalid email");
+    return;
+  }
   const oauth2Client = new OAuth2(
     process.env.CLIENT_ID,
     process.env.CLIENT_SECRET,
@@ -61,4 +67,5 @@ export default async function handler(
         </div>`,
     })
     .catch((err: any) => console.log("error", err));
+  res.status(200).send("success");
 }

@@ -25,12 +25,10 @@ export default async function handler(
     .then((result) => {
       if (result.length && bcrypt.compareSync(password, result[0].password)) {
         if (result[0].isActive === 0) {
-          res
-            .status(401)
-            .json({
-              type: "pending",
-              message: "Pending Account. Please Verify Your Email!",
-            });
+          res.status(401).json({
+            type: "pending",
+            message: "Pending Account. Please Verify Your Email!",
+          });
           err_status = "pending";
           return;
         }

@@ -9,9 +9,6 @@ import { redirect } from "next/navigation";
 import { useRouter } from "next/router";
 
 const SignUpPage = () => {
-  //   const navigate = useNavigate();
-  //   const location = useLocation();
-  //   const { setAuthState } = useAuth();
   const router = useRouter();
 
   const [firstName, setFristName] = useState("");
@@ -20,22 +17,6 @@ const SignUpPage = () => {
   const [password, setPassword] = useState("");
   const [organization, setOrganization] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  //   const getGeoInfo = () => {
-  //     axios
-  //       .get("https://ipapi.co/json/")
-  //       .then((response) => {
-  //         let data = response.data;
-  //         setCountry(data.country_name);
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-  //   };
-
-  //   useEffect(() => {
-  //     getGeoInfo();
-  //   }, []);
 
   const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFristName(e.target.value);
@@ -71,41 +52,16 @@ const SignUpPage = () => {
       .post("register/", data)
       .then(({ data }) => {
         toast.success(data);
+        localStorage.setItem("email", email);
+        localStorage.setItem("firstNmae", firstName);
         router.push("/emailResend");
       })
       .catch((err) => {
-        console.log(err.response.data);
         toast.warn(err.response.data);
       })
       .finally(() => {
         setIsLoading(false);
       });
-
-    // userSignup(data)
-    //   .then((res) => {
-    //     // TODO: Login user and redirect to home page
-    //     // TODO: proper handling for the sign up
-    //     // setAuthState({
-    //     //   user: {
-    //     //     id: "1",
-    //     //   },
-    //     //   token: "foo",
-    //     // });
-    //     const from = location.state?.from?.pathname || "/login";
-    //     navigate(from, { replace: true });
-    //     toast("SignUp is successful!");
-    //   })
-    //   .catch((e) => {
-    //     const { code } = e;
-    //     if (code) {
-    //       toast(FirebaseMessagesMapper[code] || "Something went wrong");
-    //     }
-
-    //     console.error(e);
-    //   })
-    //   .finally(() => {
-    //     setIsLoading(false);
-    //   });
   };
 
   return (
